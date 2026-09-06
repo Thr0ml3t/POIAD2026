@@ -1,0 +1,25 @@
+{
+  "name": "poiad2026",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Simple Movies API with Express, Sequelize, MySQL, and JWT authentication",
+  "main": "src/server.js",
+  "scripts": {
+    "dev": "node --watch --env-file=.env src/server.js",
+    "start": "node --env-file=.env src/server.js",
+    "test": "node --test"
+  },
+  "engines": {
+    "node": ">=20.6"
+  },
+  "dependencies": {
+    "express": "^5.2.1",
+    "jsonwebtoken": "^9.0.3",
+    "mysql2": "^3.24.3",
+    "sequelize": "^6.37.8"
+  },
+  "overrides": {
+    "uuid": "^11.1.1"
+  }
+}
