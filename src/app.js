@@ -1,14 +1,18 @@
 import express from 'express';
+import cors from 'cors';
 import { UniqueConstraintError, ValidationError } from 'sequelize';
 import authRoutes from './routes/authRoutes.js';
 import movieRoutes from './routes/movieRoutes.js';
+import chatRoutes from './routes/chatRoutes.js';
 
 const app = express();
 
+app.use(cors({ origin: process.env.FRONTEND_ORIGIN || 'http://localhost:5173' }));
 app.use(express.json({ limit: '10kb' }));
 app.get('/health', (req, res) => res.json({ status: 'ok' }));
 app.use('/api/auth', authRoutes);
 app.use('/api/movies', movieRoutes);
+app.use('/api/chat', chatRoutes);
 
 app.use((req, res) => res.status(404).json({ error: 'Route not found' }));
 

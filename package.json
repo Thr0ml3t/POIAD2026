@@ -14,12 +14,17 @@
     "node": ">=20.6"
   },
   "dependencies": {
+    "cors": "^2.8.6",
     "express": "^5.2.1",
     "jsonwebtoken": "^9.0.3",
     "mysql2": "^3.24.3",
-    "sequelize": "^6.37.8"
+    "sequelize": "^6.37.8",
+    "socket.io": "^4.8.4"
   },
   "overrides": {
     "uuid": "^11.1.1"
+  },
+  "devDependencies": {
+    "socket.io-client": "^4.8.4"
   }
 }

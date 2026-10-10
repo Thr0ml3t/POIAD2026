@@ -1,5 +1,7 @@
 import app from './app.js';
 import sequelize from './config/database.js';
+import { createServer } from 'node:http';
+import { attachChat } from './chat.js';
 
 async function start() {
   if (!process.env.JWT_SECRET || process.env.JWT_SECRET.length < 32) {
@@ -10,7 +12,9 @@ async function start() {
   await sequelize.sync();
 
   const port = Number(process.env.PORT) || 3000;
-  app.listen(port, () => console.log(`API listening on http://localhost:${port}`));
+  const server = createServer(app);
+  attachChat(server);
+  server.listen(port, () => console.log(`API listening on http://localhost:${port}`));
 }
 
 start().catch((error) => {
