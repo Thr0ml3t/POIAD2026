@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
+import VideoCall from '@/components/VideoCall';
 
 const apiUrl = (import.meta.env.VITE_API_URL || '').replace(/\/$/, '');
 const mergeMessages = (current, incoming) => [...new Map([...current, ...incoming].map((m) => [m.id, m])).values()].sort((a, b) => a.id - b.id);
@@ -62,6 +63,8 @@ export default function App() {
   const [draft, setDraft] = useState('');
   const [sending, setSending] = useState(false);
   const [error, setError] = useState('');
+  const [chatSocket, setChatSocket] = useState(null);
+  const [videoActive, setVideoActive] = useState(false);
 
   const socketRef = useRef(null);
   const selectedRef = useRef(null);
@@ -113,7 +116,7 @@ export default function App() {
       .catch((err) => { if (!cancelled) handleError(err); });
     const socket = io(apiUrl || undefined, { auth: { token }, autoConnect: false });
     socketRef.current = socket;
-    socket.on('connect', () => { setConnected(true); reloadHistory(); });
+    socket.on('connect', () => { setConnected(true); setChatSocket(socket); reloadHistory(); });
     socket.on('disconnect', (reason) => {
       setConnected(false);
       if (reason === 'io server disconnect') { logout(); setError('Tu sesión expiró. Inicia sesión de nuevo.'); }
@@ -132,7 +135,7 @@ export default function App() {
       }
     });
     socket.connect();
-    return () => { cancelled = true; socket.removeAllListeners(); socket.disconnect(); socketRef.current = null; };
+    return () => { cancelled = true; socket.removeAllListeners(); socket.disconnect(); socketRef.current = null; setChatSocket(null); };
   }, [token]);
 
   useEffect(() => {
@@ -200,7 +203,7 @@ export default function App() {
   </main>;
 
   const people = users.filter((person) => person.email.toLowerCase().includes(search.toLowerCase()));
-  return <main className={`chat-shell ${selected ? 'has-selection' : ''}`}>
+  return <main className={`chat-shell ${selected ? 'has-selection' : ''} ${videoActive ? 'has-call' : ''}`}>
     <aside className="sidebar">
       <div className="brand"><MessageCircle /> POI <span> / chat</span></div>
       <div className="sidebar-heading"><h1>Personas</h1><Button variant="ghost" size="icon" aria-label="Actualizar personas" title="Actualizar personas" onClick={() => request('chat/users', token).then(setUsers).catch(handleError)}><RefreshCw size={17} /></Button></div>
@@ -216,6 +219,7 @@ export default function App() {
         <div className="connection"><span className={`connection ${connected ? 'connected' : ''}`} role="status"><i />{connected ? 'Conectado' : 'Desconectado'}</span>{!connected && <Button variant="ghost" size="icon" aria-label="Reintentar conexión" onClick={() => socketRef.current?.connect()}><RefreshCw size={15} /></Button>}</div>
       </header>
       {error && <div className="chat-error error" role="alert">{error}</div>}
+      {chatSocket && <VideoCall socket={chatSocket} selectedUser={selected} onActiveChange={setVideoActive} />}
       {selected ? <>
         <div className="message-list" ref={scrollRef} role="log" aria-label={`Mensajes con ${selected.email}`} aria-live="polite">
           {cursor && <Button variant="outline" size="sm" className="older" disabled={loading} onClick={loadOlder}>Cargar mensajes anteriores</Button>}

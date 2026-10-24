@@ -2,7 +2,7 @@ import { Server } from 'socket.io';
 import User from './models/User.js';
 import Message from './models/Message.js';
 import { verifyToken } from './utils/token.js';
-import { attachVideoCall } from './videoCalls.js';
+import { attachVideoCalls } from './videoCalls.js';
 
 export function attachChat(server) {
   const io = new Server(server, {
@@ -26,10 +26,8 @@ export function attachChat(server) {
       return next(new Error('Chat unavailable. Try again.'));
     }
   });
-  
-  attachVideoCall(io);
+  attachVideoCalls(io);
   io.on('connection', (socket) => {
-    
     const { userId, expiresAt } = socket.data;
     socket.join(`user:${userId}`);
     const expiry = setTimeout(() => socket.disconnect(true), Math.max(0, expiresAt - Date.now()));

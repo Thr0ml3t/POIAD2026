@@ -25,6 +25,12 @@ The frontend uses React, shadcn/ui, Tailwind CSS, and Socket.IO. JWTs are stored
 
 Vite proxies `/api` and `/socket.io` to http://localhost:3000, so no frontend environment file is needed locally. To use a different API port, set `API_PROXY_TARGET` in the terminal running Vite. The API's `FRONTEND_ORIGIN` defaults to http://localhost:5173.
 
+### Video calls
+
+Select a person and click **Videollamar**. Both accounts must have the app open; the recipient chooses **Aceptar** or **Rechazar** before their camera or microphone is opened. **Colgar** ends the call and stops the device tracks. Text chat remains available during calls, and incoming calls appear even with no conversation selected on mobile.
+
+Calls use PeerJS's hosted signaling service and require localhost or HTTPS for camera access. One account can enable calls in one tab and join one call at a time. Unanswered invitations and incomplete connections expire after 30 seconds. Call state lives on one API instance; restrictive networks may require a TURN service, which is not configured here. See [the PeerJS guide](docs/PEERJS_VIDEO_CALL_GUIDE.md) for the signaling contract and manual device checks.
+
 ### Build and hosting
 
 ```bash

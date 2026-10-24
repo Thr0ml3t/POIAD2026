@@ -109,3 +109,17 @@ h1,h2,h3,p { margin: 0; }
   .composer { margin: 0 14px 16px; }
   .bubble { max-width: 90%; }
 }
+
+.video-call { padding: 12px 26px; border-bottom: 1px solid var(--border); flex-shrink: 0; }
+.video-call .error { margin-bottom: 8px; }
+.call-controls { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; }
+.call-controls p { flex: 1; font-size: 13px; overflow-wrap: anywhere; }
+.call-videos { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 12px; }
+.call-videos video { width: 100%; min-width: 0; max-height: 25dvh; aspect-ratio: 16 / 9; object-fit: cover; background: #182335; border-radius: 8px; }
+@media (max-width: 750px) {
+  .has-call .sidebar { display: none; }
+  .has-call .conversation { display: flex; }
+  .video-call { padding: 12px 14px; }
+  .call-videos { grid-template-columns: 1fr; }
+  .call-videos video { max-height: 17dvh; }
+}
